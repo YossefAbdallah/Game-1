@@ -51,13 +51,16 @@
             top: -10px;
         }
 
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            left: 20px;
+        .header-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .replay-btn {
             width: 50px;
             height: 50px;
-            background: #E74C3C;
+            background: #3498DB;
             border-radius: 50%;
             border: none;
             cursor: pointer;
@@ -68,26 +71,15 @@
             transition: transform 0.2s;
         }
 
-        .close-btn:hover {
-            transform: scale(1.1);
+        .replay-btn:hover {
+            transform: scale(1.1) rotate(-30deg);
         }
 
-        .close-btn::before,
-        .close-btn::after {
-            content: '';
-            position: absolute;
-            width: 25px;
-            height: 5px;
-            background: white;
-            border-radius: 3px;
-        }
-
-        .close-btn::before {
-            transform: rotate(45deg);
-        }
-
-        .close-btn::after {
-            transform: rotate(-45deg);
+        .replay-btn::before {
+            content: '↻';
+            font-size: 30px;
+            color: white;
+            font-weight: bold;
         }
 
         .cards-grid {
@@ -315,7 +307,9 @@
             <div class="ring"></div>
         </div>
 
-        <button class="close-btn" onclick="resetGame()"></button>
+        <div class="header-row">
+            <button class="replay-btn" onclick="resetGame()"></button>
+        </div>
 
         <div class="cards-grid">
             <div class="card" data-correct="true" onclick="toggleCard(this)">
