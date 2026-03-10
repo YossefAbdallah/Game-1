@@ -187,13 +187,17 @@
             display: flex;
         }
 
-        .popup {
-            background: white;
-            border-radius: 30px;
-            padding: 40px 60px;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        .feedback-image {
+            position: relative;
+            cursor: default;
             animation: popIn 0.3s ease-out;
+        }
+
+        .feedback-image img {
+            max-width: 90vw;
+            max-height: 80vh;
+            object-fit: contain;
+            cursor: inherit;
         }
 
         @keyframes popIn {
@@ -205,32 +209,6 @@
                 transform: scale(1);
                 opacity: 1;
             }
-        }
-
-        .popup img {
-            width: 150px;
-            height: 150px;
-            object-fit: contain;
-            margin-bottom: 20px;
-        }
-
-        .popup-btn {
-            padding: 15px 50px;
-            background: #27AE60;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            font-size: 20px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .popup-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .popup-btn.retry {
-            background: #E74C3C;
         }
 
         /* Background decorations */
@@ -336,11 +314,9 @@
     </div>
 
     <!-- Popup -->
-    <div class="popup-overlay" id="popupOverlay">
-        <div class="popup">
-            <img id="popupImage" src="" alt="Result">
-            <br>
-            <button class="popup-btn" id="popupBtn" onclick="closePopup()">حسناً</button>
+    <div class="popup-overlay" id="popupOverlay" onclick="handleOverlayClick(event)">
+        <div class="feedback-image" id="feedbackContainer">
+            <img id="popupImage" src="" alt="Result" onclick="handleImageClick(event)" onmousemove="handleImageHover(event)">
         </div>
     </div>
 
@@ -373,16 +349,11 @@
         function showPopup(isCorrect) {
             const overlay = document.getElementById('popupOverlay');
             const popupImage = document.getElementById('popupImage');
-            const popupBtn = document.getElementById('popupBtn');
 
             if (isCorrect) {
                 popupImage.src = 'images/correct.png';
-                popupBtn.className = 'popup-btn';
-                popupBtn.textContent = 'أحسنت!';
             } else {
                 popupImage.src = 'images/incorrect.png';
-                popupBtn.className = 'popup-btn retry';
-                popupBtn.textContent = 'حاول مرة أخرى';
             }
 
             overlay.classList.add('show');
@@ -391,6 +362,36 @@
         function closePopup() {
             const overlay = document.getElementById('popupOverlay');
             overlay.classList.remove('show');
+        }
+
+        function handleOverlayClick(event) {
+            // Close if clicked on overlay background (outside the image)
+            if (event.target === document.getElementById('popupOverlay')) {
+                closePopup();
+            }
+        }
+
+        function isOverXIcon(event) {
+            const img = event.target;
+            const rect = img.getBoundingClientRect();
+            
+            // Calculate position relative to image (as percentage)
+            const posX = ((event.clientX - rect.left) / rect.width) * 100;
+            const posY = ((event.clientY - rect.top) / rect.height) * 100;
+            
+            // X icon is in the white rectangle area (center-left, middle of image)
+            return posX >= 15 && posX <= 45 && posY >= 45 && posY <= 75;
+        }
+
+        function handleImageHover(event) {
+            const img = event.target;
+            img.style.cursor = isOverXIcon(event) ? 'pointer' : 'default';
+        }
+
+        function handleImageClick(event) {
+            if (isOverXIcon(event)) {
+                closePopup();
+            }
         }
 
         function resetGame() {
